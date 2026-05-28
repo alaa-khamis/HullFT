@@ -1,0 +1,49 @@
+data:
+  cache_name: cpu_test_arxiv
+  repeat: 150
+  seed: 42
+
+pile_index:
+  subset_filter: ArXiv
+  precomputed_candidates_dir: data/pile/precomputed
+  precomputed_embeddings_dir: data/pile/precomputed_embeddings   # required so RoBERTa is not loaded at runtime
+
+selection:
+  n_select: 20
+  k_preselect: 200
+  device: cpu
+  methods:
+    - knn
+    - sift
+    - fw
+  convex_hull:
+    fill_strategies:
+      - integerization
+    swap_passes: 2
+    force_fill: true
+
+method_params:
+  knn:
+    use_faiss: true
+  sift:
+    llambda: 0.2
+    fast: false
+  fw:
+    max_iter: 250
+    tol: 1.0e-5
+
+evaluation:
+  enabled: true
+  model_name: gpt2
+  batch_size: 1
+  max_length: 1024
+  finetune_batch_size: 1
+  finetune_max_length: 1024
+  finetune_lr: 5.0e-5
+
+finetune_approach:
+  method: gradient_refresh
+  refresh_interval: 2
+
+output:
+  results_dir: outputs/cpu_test_arxiv

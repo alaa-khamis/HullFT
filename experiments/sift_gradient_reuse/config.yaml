@@ -1,0 +1,42 @@
+data:
+  cache_name: sift_gradient_reuse_arxiv
+  repeat: 150
+  seed: 42
+
+pile_index:
+  subset_filter: ArXiv
+  precomputed_candidates_dir: data/pile/precomputed
+
+selection:
+  n_select: 50
+  k_preselect: 200
+  methods:
+    - sift
+  convex_hull:
+    fill_strategies:
+      - none
+    force_fill: false
+
+method_params:
+  sift:
+    llambda: 0.2
+    fast: false
+
+evaluation:
+  enabled: true
+  model_name: gpt2
+  batch_size: 1
+  max_length: 1024
+  finetune_batch_size: 1
+  finetune_max_length: 1024
+  finetune_lr: 5.0e-5
+
+# The launcher overrides `finetune_approach.method` per variant
+# ({sift_global_refresh, sift_consecutive_refresh}). refresh_intervals controls
+# which r values to evaluate inside evaluation.evaluate_selections' multi-r path.
+finetune_approach:
+  method: sift_global_refresh
+  refresh_intervals: [2, 3]
+
+output:
+  results_dir: outputs/sift_gradient_reuse_arxiv
